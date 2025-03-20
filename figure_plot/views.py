@@ -1,24 +1,30 @@
-from django.http import JsonResponse
 import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import HttpResponse
+
+from decorators.request_decorators import check_post_data
+
+from CivilTools.FigureGenerator.BasicPltPlotter import ShearMassRatioPlotter
+import matplotlib
+
+matplotlib.use("Agg")
 
 
-def simple_api(request):
-    data = {"message": "Hello, this is a simple API!", "status": "success"}
-    return JsonResponse(data)
-
-
-def shear_mass_ratio(request):
-    if request.method == "POST":
-        try:
-            # 获取 POST 请求中的 JSON 数据
-            data = json.loads(request.body)
-            name = data.get("name")
-            if name:
-                response_data = {"message": f"Hello, {name}!"}
-                return JsonResponse(response_data)
-            else:
-                return JsonResponse({"error": 'Missing "name" field'}, status=400)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data"}, status=400)
-    else:
-        return JsonResponse({"error": "Only POST requests are allowed"}, status=405)
+class ShearMassRatioView(APIView):
+    @check_post_data
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body).get("data")
+        shear_x = data.get("shear_x")
+        shear_y = data.get("shear_y")
+        mass = data.get("mass")
+        my_plot = ShearMassRatioPlotter(floor_num=len(mass))
+        my_plot.set_data(shear_x[::-1], shear_y[::-1], mass[::-1])
+        my_plot.set_limit(0.01)
+        my_plot.plot()
+        buffer = my_plot.save_to_stream()
+        return HttpResponse(
+            buffer,
+            content_type="image/png",
+        )

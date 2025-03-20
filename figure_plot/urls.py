@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import simple_api, shear_mass_ratio
+from .views import ShearMassRatioView
 
 urlpatterns = [
-    path("", simple_api, name="simple_api"),
-    path("shear_mass_ratio", shear_mass_ratio, name="shear_mass_ratio"),
+    path("shear_mass_ratio", ShearMassRatioView.as_view(), name="shear_mass_ratio"),
 ]
