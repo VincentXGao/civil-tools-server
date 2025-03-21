@@ -21,4 +21,5 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("figure_plot/", include("figure_plot.urls")),
+    path("ydb_extractor/", include("YDBExtractor.urls")),
 ]

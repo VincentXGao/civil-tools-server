@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "figure_plot",
+    "YDBExtractor",
 ]
 
 MIDDLEWARE = [
