@@ -12,6 +12,7 @@ import os
 import uuid
 
 sys.path.append(r"D:\02-Coding\04-YJK_API\yjk-db-load")
+sys.path.append(r"D:\000-GITHUB\yjk-db-load")
 from CivilTools.FigureGenerator.BasicPltPlotter import ShearMassRatioPlotter
 from CivilTools.YDBLoader import YDBLoader, YDBType
 import matplotlib
