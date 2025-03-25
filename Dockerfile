@@ -4,11 +4,12 @@ WORKDIR /civil_tools_server
 ADD . /civil_tools_server
 
 # 设置 pip 镜像源（清华源）
-RUN pip install --upgrade pip && \
-    pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install --upgrade pip 
 
 # 安装系统依赖和中文字体
-
+RUN mv /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources.bak
+ADD ./source.list /etc/apt/sources.list.d/debian.sources
 # 先单独运行 apt-get update，利用 Docker 缓存
 RUN apt-get update
 
