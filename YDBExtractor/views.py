@@ -14,8 +14,8 @@ import sys
 import os
 import uuid
 
-# sys.path.append(r"D:\02-Coding\04-YJK_API\yjk-db-load")
-# sys.path.append(r"D:\000-GITHUB\yjk-db-load")
+sys.path.append(r"D:\02-Coding\04-YJK_API\yjk-db-load")
+sys.path.append(r"D:\000-GITHUB\yjk-db-load")
 from CivilTools.YDBLoader import YDBLoader, YDBType
 import matplotlib
 
@@ -131,4 +131,51 @@ class ShearMassRatioExtractor(APIView):
             up_mass = temp_shear_mass_ratio_result["mass"]
             result.append(temp_shear_mass_ratio_result)
 
+        return Response({"data": result})
+
+
+class ShearMomentExtractor(APIView):
+    @check_post_data_specific_field("ydb_file_id")
+    def post(self, request: HttpRequest):
+        data = json.loads(request.body)
+        file_id = data.get("ydb_file_id")
+        type = data.get("type")
+        specific_records = FileInfo.objects.filter(id=file_id)
+        if not specific_records:
+            return Response(
+                {"error": "Invalid file ID, you should upload your file first."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        file_path = specific_records[0].FilePath
+        model = YDBLoader(file_path, YDBType.ResultYDB)
+        seismic_result = model.get_seismic_result()
+        wind_result = model.get_wind_result()
+        result = []
+        for i in range(len(seismic_result.floor_result)):
+            temp_floor_seismic_result = seismic_result.floor_result[::-1][i]
+            temp_floor_wind_result = wind_result.floor_result[::-1][i]
+            if type == "shear":
+                result.append(
+                    {
+                        "floor": temp_floor_seismic_result.floor_num,
+                        "seismic_x": temp_floor_seismic_result.shear.x,
+                        "seismic_y": temp_floor_seismic_result.shear.y,
+                        "wind_x": temp_floor_wind_result.shear.x,
+                        "wind_y": temp_floor_wind_result.shear.y,
+                    }
+                )
+            else:
+                result.append(
+                    {
+                        "floor": round(temp_floor_seismic_result.floor_num, 3),
+                        "seismic_x": round(
+                            temp_floor_seismic_result.moment.x / 1000, 3
+                        ),
+                        "seismic_y": round(
+                            temp_floor_seismic_result.moment.y / 1000, 3
+                        ),
+                        "wind_x": round(temp_floor_wind_result.moment.x / 1000, 3),
+                        "wind_y": round(temp_floor_wind_result.moment.y / 1000, 3),
+                    }
+                )
         return Response({"data": result})

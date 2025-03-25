@@ -9,8 +9,8 @@ from decorators.request_decorators import check_post_data
 import sys
 import os
 
-# sys.path.append(r"D:\02-Coding\04-YJK_API\yjk-db-load")
-# sys.path.append(r"D:\000-GITHUB\yjk-db-load")
+sys.path.append(r"D:\02-Coding\04-YJK_API\yjk-db-load")
+sys.path.append(r"D:\000-GITHUB\yjk-db-load")
 from CivilTools.FigureGenerator.SeismicReport import (
     ShearMassRatioPlotter,
     ShearMomentPlotter,
@@ -58,6 +58,9 @@ class ShearMomentPlotterView(APIView):
         type = data.get("plot_type")
         my_plot = ShearMomentPlotter(floor_num=len(wind_x), type=type)
         my_plot.set_data(wind_x[::-1], wind_y[::-1], seismic_x[::-1], seismic_y[::-1])
+        my_plot.kwargs_y["marker"] = "x"
+        my_plot.kwargs_y["ms"] = 5
+        my_plot.kwargs_y["color"] = "r"
         my_plot.plot()
         buffer = my_plot.save_to_stream()
         return HttpResponse(
