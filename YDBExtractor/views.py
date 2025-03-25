@@ -179,3 +179,91 @@ class ShearMomentExtractor(APIView):
                     }
                 )
         return Response({"data": result})
+
+
+class DriftExtractor(APIView):
+    @check_post_data_specific_field("ydb_file_id")
+    def post(self, request: HttpRequest):
+        data = json.loads(request.body)
+        file_id = data.get("ydb_file_id")
+        specific_records = FileInfo.objects.filter(id=file_id)
+        if not specific_records:
+            return Response(
+                {"error": "Invalid file ID, you should upload your file first."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        file_path = specific_records[0].FilePath
+        model = YDBLoader(file_path, YDBType.ResultYDB)
+        seismic_result = model.get_seismic_result()
+        wind_result = model.get_wind_result()
+        result = []
+        for i in range(len(seismic_result.floor_result)):
+            temp_seismic_result = seismic_result.floor_result[::-1][i]
+            temp_wind_result = wind_result.floor_result[::-1][i]
+            result.append(
+                {
+                    "floor": temp_seismic_result.floor_num,
+                    "seismic_x": temp_seismic_result.drifts[0].drift_x,
+                    "seismic_y": temp_seismic_result.drifts[0].drift_y,
+                    "wind_x": temp_wind_result.drifts[0].drift_x,
+                    "wind_y": temp_wind_result.drifts[0].drift_y,
+                }
+            )
+        return Response({"data": result})
+
+
+class DisplacementExtractor(APIView):
+    @check_post_data_specific_field("ydb_file_id")
+    def post(self, request: HttpRequest):
+        data = json.loads(request.body)
+        file_id = data.get("ydb_file_id")
+        specific_records = FileInfo.objects.filter(id=file_id)
+        if not specific_records:
+            return Response(
+                {"error": "Invalid file ID, you should upload your file first."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        file_path = specific_records[0].FilePath
+        model = YDBLoader(file_path, YDBType.ResultYDB)
+        seismic_result = model.get_seismic_result()
+        wind_result = model.get_wind_result()
+        result = []
+        for i in range(len(seismic_result.floor_result)):
+            temp_seismic_result = seismic_result.floor_result[::-1][i]
+            temp_wind_result = wind_result.floor_result[::-1][i]
+            result.append(
+                {
+                    "floor": temp_seismic_result.floor_num,
+                    "seismic_x": temp_seismic_result.drifts[0].max_disp_x,
+                    "seismic_y": temp_seismic_result.drifts[0].max_disp_y,
+                    "wind_x": temp_wind_result.drifts[0].max_disp_x,
+                    "wind_y": temp_wind_result.drifts[0].max_disp_y,
+                }
+            )
+        return Response({"data": result})
+
+
+class TestExtractor(APIView):
+    @check_post_data_specific_field("ydb_file_id")
+    def post(self, request: HttpRequest):
+        data = json.loads(request.body)
+        file_id = data.get("ydb_file_id")
+        specific_records = FileInfo.objects.filter(id=file_id)
+        if not specific_records:
+            return Response(
+                {"error": "Invalid file ID, you should upload your file first."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        file_path = specific_records[0].FilePath
+        model = YDBLoader(file_path, YDBType.ResultYDB)
+        seismic_result = model.get_seismic_result()
+        result = []
+        for temp_result in seismic_result.floor_result:
+            result.append(
+                {
+                    "floor": temp_result.floor_num,
+                    "drift_x": temp_result.drifts[0].drift_x,
+                    "drift_y": temp_result.drifts[0].drift_y,
+                }
+            )
+        return Response({"data": result})

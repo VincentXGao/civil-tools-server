@@ -14,6 +14,7 @@ sys.path.append(r"D:\000-GITHUB\yjk-db-load")
 from CivilTools.FigureGenerator.SeismicReport import (
     ShearMassRatioPlotter,
     ShearMomentPlotter,
+    DriftPlotter,
 )
 import matplotlib
 import matplotlib.pyplot as plt
@@ -57,6 +58,27 @@ class ShearMomentPlotterView(APIView):
         seismic_y = data.get("seismic_y")
         type = data.get("plot_type")
         my_plot = ShearMomentPlotter(floor_num=len(wind_x), type=type)
+        my_plot.set_data(wind_x[::-1], wind_y[::-1], seismic_x[::-1], seismic_y[::-1])
+        my_plot.kwargs_y["marker"] = "x"
+        my_plot.kwargs_y["ms"] = 5
+        my_plot.kwargs_y["color"] = "r"
+        my_plot.plot()
+        buffer = my_plot.save_to_stream()
+        return HttpResponse(
+            buffer,
+            content_type="image/png",
+        )
+
+
+class DriftPlotterView(APIView):
+    @check_post_data
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body).get("data")
+        wind_x = data.get("wind_x")
+        wind_y = data.get("wind_y")
+        seismic_x = data.get("seismic_x")
+        seismic_y = data.get("seismic_y")
+        my_plot = DriftPlotter(floor_num=len(wind_x))
         my_plot.set_data(wind_x[::-1], wind_y[::-1], seismic_x[::-1], seismic_y[::-1])
         my_plot.kwargs_y["marker"] = "x"
         my_plot.kwargs_y["ms"] = 5
