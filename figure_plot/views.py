@@ -78,8 +78,10 @@ class DriftPlotterView(APIView):
         wind_y = data.get("wind_y")
         seismic_x = data.get("seismic_x")
         seismic_y = data.get("seismic_y")
+        limitation = data.get("limitation")
         my_plot = DriftPlotter(floor_num=len(wind_x))
         my_plot.set_data(wind_x[::-1], wind_y[::-1], seismic_x[::-1], seismic_y[::-1])
+        my_plot.set_limit(limitation)
         my_plot.kwargs_y["marker"] = "x"
         my_plot.kwargs_y["ms"] = 5
         my_plot.kwargs_y["color"] = "r"
