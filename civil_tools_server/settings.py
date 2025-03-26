@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "figure_plot",
     "YDBExtractor",
+    "ReportGenerator",
 ]
 
 MIDDLEWARE = [
