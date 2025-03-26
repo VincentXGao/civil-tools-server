@@ -7,7 +7,6 @@ from django.http import FileResponse
 
 from decorators.request_decorators import check_post_data
 
-from docx2pdf import convert
 
 import sys
 import os
