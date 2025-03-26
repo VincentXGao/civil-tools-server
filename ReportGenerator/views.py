@@ -26,12 +26,10 @@ class StairCalculateSheetView(APIView):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         file_path = os.path.join(STAIR_REPORT_FILE_TEMP_PATH, "ttt_test__ttt.docx")
-        re_generate = data.get("reGenerate")
-        if re_generate:
+        if not os.path.exists(file_path):
             creator = StairCalculationReport()
             creator.set_stair_data()
             creator.set_calculate_info()
             creator.create()
             creator.save_to_file(file_path)
-
         return FileResponse(open(file_path, "rb"), filename="document.pdf")
