@@ -17,8 +17,6 @@ if not os.path.exists(STAIR_REPORT_FILE_TEMP_PATH):
     os.makedirs(STAIR_REPORT_FILE_TEMP_PATH)
 
 
-sys.path.append(r"D:\02-Coding\04-YJK_API\yjk-db-load")
-sys.path.append(r"D:\000-GITHUB\yjk-db-load")
 from CivilTools.ReportGenerator import StairCalculationReport
 
 

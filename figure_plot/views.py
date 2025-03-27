@@ -6,11 +6,7 @@ from django.http import HttpResponse
 
 from decorators.request_decorators import check_post_data
 
-import sys
-import os
 
-sys.path.append(r"D:\02-Coding\04-YJK_API\yjk-db-load")
-sys.path.append(r"D:\000-GITHUB\yjk-db-load")
 from CivilTools.FigureGenerator.SeismicReport import (
     ShearMassRatioPlotter,
     ShearMomentPlotter,

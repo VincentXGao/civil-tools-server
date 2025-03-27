@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "channels",
     "corsheaders",
     "figure_plot",
     "YDBExtractor",
@@ -132,3 +134,5 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # settings.py
 DATA_UPLOAD_MAX_MEMORY_SIZE = 100 * 1024 * 1024  # 100MB
+
+ASGI_APPLICATION = "civil_tools_server.asgi.application"
