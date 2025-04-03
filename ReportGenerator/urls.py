@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import StairCalculateSheetView
+from .views import StairCalculateSheetView, DownLoadFileView
 
 urlpatterns = [
-    path("stair_cal_sheet", StairCalculateSheetView.as_view(), name="stair_cal_sheet"),
+    path("down_load_file", DownLoadFileView.as_view(), name="down_load_file"),
 ]

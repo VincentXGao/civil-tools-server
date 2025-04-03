@@ -1,7 +1,7 @@
 from django.urls import re_path
 
-from . import consumers
+from .consumers import StairReportConsumer
 
 websocket_urlpatterns = [
-    re_path(r"ws/report_generate", consumers.ReportConsumer.as_asgi()),
+    re_path(r"ws/stair_report_generate", StairReportConsumer.as_asgi()),
 ]

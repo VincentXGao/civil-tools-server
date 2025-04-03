@@ -31,3 +31,10 @@ class StairCalculateSheetView(APIView):
             creator.create()
             creator.save_to_file(file_path)
         return FileResponse(open(file_path, "rb"), filename="document.pdf")
+
+
+class DownLoadFileView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        file_path = data.get("filePath")
+        return FileResponse(open(file_path, "rb"), filename="document.docx")
